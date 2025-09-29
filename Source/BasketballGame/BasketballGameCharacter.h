@@ -6,7 +6,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "EnhancedInput/Public/EnhancedInputSubsystems.h"
+#include "EnhancedInput/Public/EnhancedInputComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "BasketballGameCharacter.generated.h"
+
 
 class USpringArmComponent;
 class UCameraComponent;

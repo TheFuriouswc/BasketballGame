@@ -15,6 +15,7 @@
 #include "CollisionQueryParams.h" 
 #include "Net/UnrealNetwork.h"
 #include "InteractInterface.h"
+#include "Logging/StructuredLog.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -57,10 +58,22 @@ ABasketballGameCharacter::ABasketballGameCharacter()
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->FieldOfView = 100.0f;
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+
+	//Get the player controller
+	if (APlayerController* playerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0)));
+	//Get the Enhanced Input Local Player Subsystem
+	if (UEnhancedInputLocalPlayerSubsystem* inputSystem = playerController->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>());
+	if (mappingContext)inputSystem->AddMappingContext(mappingContext, 0); //Set the mapping context
+
+
+
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -82,6 +95,8 @@ void ABasketballGameCharacter::NotifyControllerChanged()
 
 void ABasketballGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+
+
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
@@ -144,8 +159,8 @@ void ABasketballGameCharacter::Look(const FInputActionValue& Value)
 
 void ABasketballGameCharacter::Interact()
 {
-
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact button called"));
+	Server_CalledOnInteract();
 
 }
 
@@ -178,48 +193,58 @@ void ABasketballGameCharacter::Multi_CalledOnGetLookRotation_Implementation(floa
 void  ABasketballGameCharacter::Server_CalledOnInteract_Implementation()
 {
 	Multi_CalledOnInteract();
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact button called"));
 }
 
 void  ABasketballGameCharacter::Multi_CalledOnInteract_Implementation()
 {
-	FVector Start = FollowCamera->GetComponentLocation();
-	FVector End = (FollowCamera->GetForwardVector()*125) + Start;
-
-
-	FCollisionQueryParams RV_TraceParams(FName(TEXT("RV_Trace")), true, this);
-	RV_TraceParams.bTraceComplex = true;
-	RV_TraceParams.bReturnPhysicalMaterial = false;
-
-	// Initialize hit info
-	FHitResult RV_Hit(ForceInit);
-
-	bool bHit = GetWorld()->LineTraceSingleByChannel
-	(
-		RV_Hit,       // result
-		Start,        // start
-		End,          // end
-		ECC_Pawn,     // collision channel
-		RV_TraceParams
-	);
-
-	// Check result
-	if (bHit && RV_Hit.bBlockingHit)
+	if (ABasketballGameCharacter::IsLocallyControlled())
 	{
-		AActor* HitActor = RV_Hit.GetActor();
-		FVector ImpactPoint = RV_Hit.ImpactPoint;
-		FVector ImpactNormal = RV_Hit.ImpactNormal;
 
-		IInteractInterface* InteractableActor = Cast<IInteractInterface>(HitActor);
 
-		if(InteractableActor)
+		FVector Start = FollowCamera->GetComponentLocation();
+		FVector End = (FollowCamera->GetForwardVector() * 125) + Start;
+
+
+		FCollisionQueryParams RV_TraceParams(FName(TEXT("RV_Trace")), true, this);
+		RV_TraceParams.bTraceComplex = true;
+		RV_TraceParams.bReturnPhysicalMaterial = false;
+		RV_TraceParams.AddIgnoredActor(this);
+
+
+		// Initialize hit info
+		FHitResult RV_Hit(ForceInit);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact called"));
+
+		bool bHit = GetWorld()->LineTraceSingleByChannel
+		(
+			RV_Hit,       // result
+			Start,        // start
+			End,          // end
+			ECC_Visibility,     // collision channel
+			RV_TraceParams
+		);
+
+		DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1.0f, 0, 1.0f);
+
+		// Check result
+		if (bHit && RV_Hit.bBlockingHit)
 		{
-			
-			InteractableActor->CallInteract(this);
-			
+
+			AActor* HitActor = RV_Hit.GetActor();
+			FVector ImpactPoint = RV_Hit.ImpactPoint;
+			FVector ImpactNormal = RV_Hit.ImpactNormal;
+
+			IInteractInterface* InteractableActor = Cast<IInteractInterface>(HitActor);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Hit something"));
+			if (InteractableActor)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact with an object"));
+				InteractableActor->CallInteract(this);
+
+			}
 		}
 	}
-
 
 
 
