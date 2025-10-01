@@ -65,11 +65,16 @@ ABasketballGameCharacter::ABasketballGameCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
 
-	//Get the player controller
-	if (APlayerController* playerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0)));
-	//Get the Enhanced Input Local Player Subsystem
-	if (UEnhancedInputLocalPlayerSubsystem* inputSystem = playerController->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>());
-	if (mappingContext)inputSystem->AddMappingContext(mappingContext, 0); //Set the mapping context
+	/*if (ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(this))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+		{
+			if (!InputMapping.IsNull())
+			{
+				InputSystem->AddMappingContext(InputMapping.LoadSynchronous(), Priority);
+			}
+		}
+	}*/
 
 
 
@@ -159,8 +164,11 @@ void ABasketballGameCharacter::Look(const FInputActionValue& Value)
 
 void ABasketballGameCharacter::Interact()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact button called"));
+
 	Server_CalledOnInteract();
+	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact button fired"));
+	
 
 }
 
@@ -214,7 +222,7 @@ void  ABasketballGameCharacter::Multi_CalledOnInteract_Implementation()
 
 		// Initialize hit info
 		FHitResult RV_Hit(ForceInit);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact called"));
+
 
 		bool bHit = GetWorld()->LineTraceSingleByChannel
 		(
@@ -236,7 +244,7 @@ void  ABasketballGameCharacter::Multi_CalledOnInteract_Implementation()
 			FVector ImpactNormal = RV_Hit.ImpactNormal;
 
 			IInteractInterface* InteractableActor = Cast<IInteractInterface>(HitActor);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Hit something"));
+	
 			if (InteractableActor)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact with an object"));

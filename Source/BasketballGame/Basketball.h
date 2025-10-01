@@ -14,6 +14,7 @@ class BASKETBALLGAME_API ABasketball : public AActor, public IInteractInterface
 	GENERATED_BODY()
 
 	virtual void CallInteract(ACharacter* ActorWhoCalled) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 public:	
 	// Sets default values for this actor's properties
 	ABasketball();
@@ -29,6 +30,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(Server, Reliable)
+	void Server_AttachToPlayer(ACharacter* ActorWhoCalled);
 	
 
 };

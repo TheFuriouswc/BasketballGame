@@ -6,8 +6,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
-#include "EnhancedInput/Public/EnhancedInputSubsystems.h"
-#include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "BasketballGameCharacter.generated.h"
 
@@ -34,6 +32,9 @@ class ABasketballGameCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TSoftObjectPtr<UInputMappingContext> InputMapping;
 
 
 	
