@@ -130,10 +130,15 @@ public:
 	void Server_CalledOnInteract();
 
 	UFUNCTION(Server, Reliable)
-	void Server_CalledOnShootBall(bool IsAiming, ABasketball* BasketballReference);
+	void Server_CalledOnShootBall(bool IsAiming, ABasketball* BasketballReference, UCameraComponent* Camera, float ShootPower);
 
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Multi_CalledOnShootBall(bool IsAiming, ABasketball* BasketballReference);
 
+	UFUNCTION(BlueprintPure, Category = "Basketball Character | Getter Function")
+	float GetShootingPower() const { return ShootingPower; };
+
+	UFUNCTION(BlueprintPure, Category = "Basketball Character | Getter Function")
+	bool GetIsAming() const { return bIsAiming; };
 };

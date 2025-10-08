@@ -28,7 +28,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	int BounceCount = 0;
 
-
+	FTimerHandle testTimerHandle;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

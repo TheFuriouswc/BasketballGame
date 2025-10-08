@@ -171,15 +171,9 @@ void ABasketballGameCharacter::Shoot()
 {
 
 
-	if (ABasketballGameCharacter::HasAuthority())
 
-	{
-		Server_CalledOnShootBall(bIsAiming, BasketballRef);
-	}
-	else
-	{
-		Multi_CalledOnShootBall(bIsAiming, BasketballRef);
-	}
+	Server_CalledOnShootBall(bIsAiming, BasketballRef, FollowCamera, ShootingPower);
+
 	
 	
 
@@ -310,7 +304,7 @@ void  ABasketballGameCharacter::Server_CalledOnInteract_Implementation()
 
 }
 
-void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAiming, ABasketball* BasketballReference)
+void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAiming, ABasketball* BasketballReference, UCameraComponent* Camera, float ShootPower)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Shoot ball Server"));
 
@@ -322,15 +316,37 @@ void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAi
 		BasketballReference->Mesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 		BasketballReference->Mesh->SetupAttachment(RootComponent);
 		//Launch Anle
-		FRotator LaunchRot = FollowCamera->GetComponentRotation();
+		FRotator LaunchRot = Camera->GetComponentRotation();
 		LaunchRot.Pitch += 20.0f;
+		FVector ShootDirection = LaunchRot.Vector();
+
+		//Get abount of impluse to add from center of the camera * the shooting power
+		FVector Power = ShootDirection * ShootPower * 2000.0f;
+
+		BasketballReference->Mesh->SetSimulatePhysics(true);
+
+		BasketballReference->ProjectileMovementComponent->bShouldBounce = true;
+		BasketballReference->Mesh->AddImpulse(Power, NAME_None, true);
+	}
+	else if (BasketballReference)
+	{
+		ShootingPower = 0.050f;
+		BasketballReference->Mesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		BasketballReference->Mesh->SetupAttachment(RootComponent);
+		//Launch Anle
+		FRotator LaunchRot = Camera->GetComponentRotation();
+		LaunchRot.Pitch += 45.0f;
 		FVector ShootDirection = LaunchRot.Vector();
 
 		//Get abount of impluse to add from center of the camera * the shooting power
 		FVector Power = ShootDirection * ShootingPower * 2000.0f;
 
+		BasketballReference->Mesh->SetSimulatePhysics(true);
+
 		BasketballReference->ProjectileMovementComponent->bShouldBounce = true;
 		BasketballReference->Mesh->AddImpulse(Power, NAME_None, true);
+
+
 	}
 
 
@@ -360,7 +376,7 @@ void ABasketballGameCharacter::Multi_CalledOnShootBall_Implementation(bool IsAim
 
 		BasketballReference->Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		BasketballReference->Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-		BasketballReference->Mesh->SetSimulatePhysics(true);
+		
 
 		
 
@@ -369,6 +385,23 @@ void ABasketballGameCharacter::Multi_CalledOnShootBall_Implementation(bool IsAim
 		BasketballRef = nullptr;
 
 	}
+	else if (BasketballRef)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Kobe!"));
+
+
+
+		BasketballReference->Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		BasketballReference->Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+
+
+
+
+
+
+		BasketballRef = nullptr;
+	}
+
 
 }
 
