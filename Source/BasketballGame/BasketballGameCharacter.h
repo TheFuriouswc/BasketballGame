@@ -7,7 +7,9 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "Kismet/GameplayStatics.h"
+#include "Basketball.h"
 #include "BasketballGameCharacter.generated.h"
+
 
 
 class USpringArmComponent;
@@ -18,7 +20,7 @@ struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
-UCLASS(config=Game)
+UCLASS(config = Game)
 class ABasketballGameCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -37,7 +39,7 @@ class ABasketballGameCharacter : public ACharacter
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
 
 
-	
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -58,14 +60,28 @@ class ABasketballGameCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
 
+	/** Interact Aim Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* AimAction;
+
+
+	/** Interact Shoot Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShootAction;
+
+
 public:
 	ABasketballGameCharacter();
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated = true, meta = (AllowPrivateAccess = "true"))
 	float CameraPitch = 0.0f;
 
-
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	float ShootingPower = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	bool bIsAiming = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	ABasketball* BasketballRef;
 
 protected:
 
@@ -75,9 +91,16 @@ protected:
 	/** Called for Interact input */
 	void Interact();
 
+	/** Called for aiming */
+	void Aim();
+	void StopAim();
+
+	/** Called for shooting */
+	void Shoot();
+
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
+
 
 protected:
 
@@ -85,10 +108,13 @@ protected:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	
+
 	void SetCameraLocation();
 
 public:
+
+	virtual void Tick(float DeltaTime) override;
+
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
@@ -103,7 +129,11 @@ public:
 	UFUNCTION(Server, Reliable)
 	void Server_CalledOnInteract();
 
-	UFUNCTION(NetMulticast, Reliable)
-	void Multi_CalledOnInteract();
-};
+	UFUNCTION(Server, Reliable)
+	void Server_CalledOnShootBall(bool IsAiming, ABasketball* BasketballReference);
 
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multi_CalledOnShootBall(bool IsAiming, ABasketball* BasketballReference);
+
+};

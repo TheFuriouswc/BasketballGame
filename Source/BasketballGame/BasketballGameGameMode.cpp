@@ -3,6 +3,7 @@
 #include "BasketballGameGameMode.h"
 #include "BasketballGameCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "GameFramework/HUD.h"
 
 ABasketballGameGameMode::ABasketballGameGameMode()
 {
@@ -12,4 +13,12 @@ ABasketballGameGameMode::ABasketballGameGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+	static ConstructorHelpers::FClassFinder<AHUD> PlayerHudBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_BasketballPlayerHud.BP_BasketballPlayerHud_C"));
+	if (PlayerHudBPClass.Class != NULL)
+	{
+		HUDClass = PlayerHudBPClass.Class;
+	}
+	
+
+
 }

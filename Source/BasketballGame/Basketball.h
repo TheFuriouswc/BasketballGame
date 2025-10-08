@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "InteractInterface.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Basketball.generated.h"
 
 
@@ -21,6 +22,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	class UStaticMeshComponent* Mesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Movement)
+	UProjectileMovementComponent* ProjectileMovementComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
+	int BounceCount = 0;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,8 +37,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(Server, Reliable)
-	void Server_AttachToPlayer(ACharacter* ActorWhoCalled);
+
+	void AttachToPlayer(ACharacter* ActorWhoCalled);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multi_SetPramas(ACharacter* ActorWhoCalled);
 	
 
 };

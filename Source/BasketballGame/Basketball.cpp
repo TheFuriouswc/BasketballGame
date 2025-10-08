@@ -6,6 +6,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Logging/StructuredLog.h"
 
+
 // Sets default values
 ABasketball::ABasketball()
 {
@@ -16,14 +17,15 @@ ABasketball::ABasketball()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
 	Mesh->SetIsReplicated(true);
-	
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 
 
 }
 
-void ABasketball::GetLifetimeReplicatedProps(TArray <FLifetimeProperty>& OutLifetimeprops) const
+void ABasketball::GetLifetimeReplicatedProps(TArray <FLifetimeProperty>& OutLifetimeProps) const
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeprops);
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ABasketball, BounceCount);
 
 	/*DOREPLIFETIME(ABasketball);*/
 }
@@ -46,24 +48,32 @@ void ABasketball::Tick(float DeltaTime)
 
 void ABasketball::CallInteract(ACharacter* ActorWhoCalled)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Called"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Called"));
 
 
-	Server_AttachToPlayer(ActorWhoCalled);
+	AttachToPlayer(ActorWhoCalled);
 
 
 
 
 }
 
-void ABasketball::Server_AttachToPlayer_Implementation(ACharacter* ActorWhoCalled)
+void ABasketball::AttachToPlayer(ACharacter* ActorWhoCalled)
 {
-	if (ActorWhoCalled->HasAuthority())
-	{
+	
 		Mesh->AttachToComponent(ActorWhoCalled->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("handSocket"));
-		Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Server called"));
-	}
+		Multi_SetPramas(ActorWhoCalled);
+	
 	
 }
+
+void ABasketball::Multi_SetPramas_Implementation(ACharacter* ActorWhoCalled)
+{
+	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Server called"));
+	Mesh->SetSimulatePhysics(false);
+	Mesh->SetWorldScale3D(Mesh->GetComponentScale() / ActorWhoCalled->GetMesh()->GetComponentScale());
+}
+
+
 

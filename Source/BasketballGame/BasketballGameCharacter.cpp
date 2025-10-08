@@ -13,6 +13,7 @@
 #include "Components/ArrowComponent.h"
 #include "DrawDebugHelpers.h"     
 #include "CollisionQueryParams.h" 
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "InteractInterface.h"
 #include "Logging/StructuredLog.h"
@@ -65,16 +66,6 @@ ABasketballGameCharacter::ABasketballGameCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
 
-	/*if (ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(this))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-		{
-			if (!InputMapping.IsNull())
-			{
-				InputSystem->AddMappingContext(InputMapping.LoadSynchronous(), Priority);
-			}
-		}
-	}*/
 
 
 
@@ -98,6 +89,28 @@ void ABasketballGameCharacter::NotifyControllerChanged()
 	}
 }
 
+
+void ABasketballGameCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	//checks to see it the player is aiming
+	if (bIsAiming)
+	{
+		//adds the amout of deltatime to figure how long the button is pressed
+		ShootingPower += DeltaTime;
+		
+		//resets
+		if (ShootingPower >= 2.0f)
+		{
+			ShootingPower = 0;
+		}
+		ShootingPower = FMath::Clamp(ShootingPower, 0.0f, 2.0f);
+	}
+}
+
+
+
 void ABasketballGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 
@@ -117,6 +130,13 @@ void ABasketballGameCharacter::SetupPlayerInputComponent(UInputComponent* Player
 
 		//Interact
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ABasketballGameCharacter::Interact);
+
+		//Aim
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &ABasketballGameCharacter::Aim);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ABasketballGameCharacter::StopAim);
+
+		//shoot
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &ABasketballGameCharacter::Shoot);
 	}
 	else
 	{
@@ -147,6 +167,25 @@ void ABasketballGameCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
+void ABasketballGameCharacter::Shoot()
+{
+
+
+	if (ABasketballGameCharacter::HasAuthority())
+
+	{
+		Server_CalledOnShootBall(bIsAiming, BasketballRef);
+	}
+	else
+	{
+		Multi_CalledOnShootBall(bIsAiming, BasketballRef);
+	}
+	
+	
+
+
+}
+
 void ABasketballGameCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
@@ -172,6 +211,20 @@ void ABasketballGameCharacter::Interact()
 
 }
 
+void ABasketballGameCharacter::Aim()
+{
+	
+
+	bIsAiming = true;
+
+}
+
+void ABasketballGameCharacter::StopAim()
+{
+
+	ShootingPower = 0.0f;
+	bIsAiming = false;
+}
 
 
 
@@ -183,6 +236,10 @@ void ABasketballGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	// Register any replicated properties you’ve marked with UPROPERTY(Replicated)
 	// Example:
 	DOREPLIFETIME(ABasketballGameCharacter, CameraPitch);
+	DOREPLIFETIME(ABasketballGameCharacter, ShootingPower);
+	DOREPLIFETIME(ABasketballGameCharacter, bIsAiming);
+	DOREPLIFETIME(ABasketballGameCharacter, BasketballRef);
+
 }
 
 
@@ -200,60 +257,118 @@ void ABasketballGameCharacter::Multi_CalledOnGetLookRotation_Implementation(floa
 
 void  ABasketballGameCharacter::Server_CalledOnInteract_Implementation()
 {
-	Multi_CalledOnInteract();
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact button called"));
-}
 
-void  ABasketballGameCharacter::Multi_CalledOnInteract_Implementation()
-{
-	if (ABasketballGameCharacter::IsLocallyControlled())
+	FVector Start = FollowCamera->GetComponentLocation();
+	FVector End = (FollowCamera->GetForwardVector() * 300) + Start;
+
+
+	FCollisionQueryParams RV_TraceParams(FName(TEXT("RV_Trace")), true, this);
+	RV_TraceParams.bTraceComplex = true;
+	RV_TraceParams.bReturnPhysicalMaterial = false;
+	RV_TraceParams.AddIgnoredActor(this);
+
+
+	// Initialize hit info
+	FHitResult RV_Hit(ForceInit);
+
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel
+	(
+		RV_Hit,       // result
+		Start,        // start
+		End,          // end
+		ECC_Visibility,     // collision channel
+		RV_TraceParams
+	);
+
+	DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1.0f, 0, 1.0f);
+
+	// Check result
+	if (bHit && RV_Hit.bBlockingHit)
 	{
 
+		AActor* HitActor = RV_Hit.GetActor();
+		FVector ImpactPoint = RV_Hit.ImpactPoint;
+		FVector ImpactNormal = RV_Hit.ImpactNormal;
 
-		FVector Start = FollowCamera->GetComponentLocation();
-		FVector End = (FollowCamera->GetForwardVector() * 125) + Start;
-
-
-		FCollisionQueryParams RV_TraceParams(FName(TEXT("RV_Trace")), true, this);
-		RV_TraceParams.bTraceComplex = true;
-		RV_TraceParams.bReturnPhysicalMaterial = false;
-		RV_TraceParams.AddIgnoredActor(this);
+		IInteractInterface* InteractableActor = Cast<IInteractInterface>(HitActor);
 
 
-		// Initialize hit info
-		FHitResult RV_Hit(ForceInit);
 
-
-		bool bHit = GetWorld()->LineTraceSingleByChannel
-		(
-			RV_Hit,       // result
-			Start,        // start
-			End,          // end
-			ECC_Visibility,     // collision channel
-			RV_TraceParams
-		);
-
-		DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1.0f, 0, 1.0f);
-
-		// Check result
-		if (bHit && RV_Hit.bBlockingHit)
+		if (InteractableActor)
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact with an object"));
+			BasketballRef = Cast<ABasketball>(HitActor);
+			BasketballRef->SetOwner(this);
+			InteractableActor->CallInteract(this);
 
-			AActor* HitActor = RV_Hit.GetActor();
-			FVector ImpactPoint = RV_Hit.ImpactPoint;
-			FVector ImpactNormal = RV_Hit.ImpactNormal;
-
-			IInteractInterface* InteractableActor = Cast<IInteractInterface>(HitActor);
-	
-			if (InteractableActor)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact with an object"));
-				InteractableActor->CallInteract(this);
-
-			}
 		}
 	}
 
 
 
+
 }
+
+void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAiming, ABasketball* BasketballReference)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Shoot ball Server"));
+
+	if (IsAiming && BasketballReference)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Kobe!"));
+
+
+		BasketballReference->Mesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		BasketballReference->Mesh->SetupAttachment(RootComponent);
+		//Launch Anle
+		FRotator LaunchRot = FollowCamera->GetComponentRotation();
+		LaunchRot.Pitch += 20.0f;
+		FVector ShootDirection = LaunchRot.Vector();
+
+		//Get abount of impluse to add from center of the camera * the shooting power
+		FVector Power = ShootDirection * ShootingPower * 2000.0f;
+
+		BasketballReference->ProjectileMovementComponent->bShouldBounce = true;
+		BasketballReference->Mesh->AddImpulse(Power, NAME_None, true);
+	}
+
+
+
+
+
+	Multi_CalledOnShootBall(IsAiming, BasketballReference);
+
+
+
+
+
+}
+
+
+void ABasketballGameCharacter::Multi_CalledOnShootBall_Implementation(bool IsAiming, ABasketball* BasketballReference)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Shoot ball client"));
+
+
+
+	if (IsAiming && BasketballReference)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Kobe!"));
+
+
+
+		BasketballReference->Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		BasketballReference->Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+		BasketballReference->Mesh->SetSimulatePhysics(true);
+
+		
+
+
+
+		BasketballRef = nullptr;
+
+	}
+
+}
+
