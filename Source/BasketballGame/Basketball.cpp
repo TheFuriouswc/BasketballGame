@@ -60,7 +60,7 @@ void ABasketball::CallInteract(ACharacter* ActorWhoCalled)
 
 void ABasketball::AttachToPlayer(ACharacter* ActorWhoCalled)
 {
-		Mesh->SetSimulatePhysics(false);
+		/*Mesh->SetSimulatePhysics(false);*/
 		Mesh->AttachToComponent(ActorWhoCalled->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("handSocket"));
 		Multi_SetPramas(ActorWhoCalled);
 	
@@ -69,7 +69,7 @@ void ABasketball::AttachToPlayer(ACharacter* ActorWhoCalled)
 
 void ABasketball::Multi_SetPramas_Implementation(ACharacter* ActorWhoCalled)
 {
-	
+	Mesh->SetSimulatePhysics(false);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Server called"));
 	Mesh->SetWorldScale3D(Mesh->GetComponentScale() / ActorWhoCalled->GetMesh()->GetComponentScale());
 }

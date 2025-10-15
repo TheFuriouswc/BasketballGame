@@ -317,11 +317,11 @@ void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAi
 		BasketballReference->Mesh->SetupAttachment(RootComponent);
 		//Launch Anle
 		FRotator LaunchRot = Camera->GetComponentRotation();
-		LaunchRot.Pitch += 20.0f;
+		LaunchRot.Pitch += 35.0f;
 		FVector ShootDirection = LaunchRot.Vector();
 
 		//Get abount of impluse to add from center of the camera * the shooting power
-		FVector Power = ShootDirection * ShootPower * 2000.0f;
+		FVector Power = ShootDirection * ShootPower * 1000.0f;
 
 		BasketballReference->Mesh->SetSimulatePhysics(true);
 
@@ -330,7 +330,7 @@ void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAi
 	}
 	else if (BasketballReference)
 	{
-		ShootingPower = 0.050f;
+		ShootingPower = 0.50f;
 		BasketballReference->Mesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 		BasketballReference->Mesh->SetupAttachment(RootComponent);
 		//Launch Anle
@@ -339,7 +339,7 @@ void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAi
 		FVector ShootDirection = LaunchRot.Vector();
 
 		//Get abount of impluse to add from center of the camera * the shooting power
-		FVector Power = ShootDirection * ShootingPower * 2000.0f;
+		FVector Power = ShootDirection * ShootingPower * 1000.0f;
 
 		BasketballReference->Mesh->SetSimulatePhysics(true);
 
