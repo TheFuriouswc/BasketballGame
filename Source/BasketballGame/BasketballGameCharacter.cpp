@@ -116,11 +116,27 @@ void ABasketballGameCharacter::Tick(float DeltaTime)
 			bIsOutOfStamina = true;
 			GetCharacterMovement()->MaxWalkSpeed = 300.f;
 		}
-
+		Stamina = FMath::Clamp(Stamina, 0.0f, 10.0f);
 	}
 	else if (Stamina <= 3)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Set speed to 300"));
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	}
+	else if (Stamina > 3)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	}
 
+	if (bRegenStamina)
+	{
+		Stamina += DeltaTime;
+		bIsOutOfStamina = false;
+		if (Stamina >= MaxStamina)
+		{
+			bRegenStamina = false;
+		}
+		Stamina = FMath::Clamp(Stamina, 0.0f, 10.0f);
 	}
 }
 
@@ -239,24 +255,29 @@ void ABasketballGameCharacter::StopAim()
 	bIsAiming = false;
 }
 
-void Sprint()
+void ABasketballGameCharacter::Sprint()
 {
 
-	if (Stamina <= 3 && !bIsOutOfStamina)
+	if (Stamina >= 3 && !bIsOutOfStamina)
 	{
+		bRegenStamina = false;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("set speed to 900"));
 		GetCharacterMovement()->MaxWalkSpeed = 900.f;
+		bIsSprinting = true;
 	}
 	
 }
 
-void StopSprint()
+void ABasketballGameCharacter::StopSprint()
 {
 
-	if (Stamina <= 3 && !bIsOutOfStamina)
+	if (Stamina >= 3 && !bIsOutOfStamina)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Set speed to 600"));
 		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+		bIsSprinting = false;
 	}
-
+	bRegenStamina = true;
 }
 
 
@@ -272,8 +293,10 @@ void ABasketballGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(ABasketballGameCharacter, bIsAiming);
 	DOREPLIFETIME(ABasketballGameCharacter, BasketballRef);
 	DOREPLIFETIME(ABasketballGameCharacter, Stamina);
+	DOREPLIFETIME(ABasketballGameCharacter, MaxStamina);
 	DOREPLIFETIME(ABasketballGameCharacter, bIsSprinting);
 	DOREPLIFETIME(ABasketballGameCharacter, bIsOutOfStamina);
+	DOREPLIFETIME(ABasketballGameCharacter, bRegenStamina);
 }
 
 

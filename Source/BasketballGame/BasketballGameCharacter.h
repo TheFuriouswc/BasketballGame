@@ -40,7 +40,7 @@ class ABasketballGameCharacter : public ACharacter
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
 
 
-
+#pragma region
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -75,6 +75,8 @@ class ABasketballGameCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SprintAction;
 
+#pragma endregion Inputs
+
 public:
 	ABasketballGameCharacter();
 
@@ -86,14 +88,24 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
 	bool bIsAiming = false;
 
+#pragma region 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
 	float Stamina = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	float MaxStamina = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
 	bool bIsSprinting = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
 	bool bIsOutOfStamina = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	bool bRegenStamina = false;
+
+#pragma endregion Stamina
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated = true, meta = (AllowPrivateAccess = "true"))
 	ABasketball* BasketballRef;
@@ -160,4 +172,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Basketball Character | Getter Function")
 	bool GetIsAming() const { return bIsAiming; };
+
+	UFUNCTION(BlueprintPure, Category = "Basketball Character | Getter Function")
+	float GetStamina() const { return Stamina; };
+
+
 };
