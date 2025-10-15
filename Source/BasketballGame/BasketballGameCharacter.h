@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "Kismet/GameplayStatics.h"
 #include "Basketball.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "BasketballGameCharacter.generated.h"
 
 
@@ -70,6 +71,10 @@ class ABasketballGameCharacter : public ACharacter
 	UInputAction* ShootAction;
 
 
+	/** Interact Shoot Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SprintAction;
+
 public:
 	ABasketballGameCharacter();
 
@@ -80,6 +85,16 @@ public:
 	float ShootingPower = 0.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
 	bool bIsAiming = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	float Stamina = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	bool bIsSprinting = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	bool bIsOutOfStamina = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated = true, meta = (AllowPrivateAccess = "true"))
 	ABasketball* BasketballRef;
 
@@ -97,6 +112,10 @@ protected:
 
 	/** Called for shooting */
 	void Shoot();
+
+	/** Called for shooting */
+	void Sprint();
+	void StopSprint();
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);

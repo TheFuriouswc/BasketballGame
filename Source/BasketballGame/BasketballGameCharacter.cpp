@@ -4,7 +4,6 @@
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
@@ -107,6 +106,22 @@ void ABasketballGameCharacter::Tick(float DeltaTime)
 		}
 		ShootingPower = FMath::Clamp(ShootingPower, 0.0f, 2.0f);
 	}
+
+
+	if (bIsSprinting && !bIsOutOfStamina)
+	{
+		Stamina -= DeltaTime;
+		if (Stamina <= 0)
+		{
+			bIsOutOfStamina = true;
+			GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		}
+
+	}
+	else if (Stamina <= 3)
+	{
+
+	}
 }
 
 
@@ -137,6 +152,10 @@ void ABasketballGameCharacter::SetupPlayerInputComponent(UInputComponent* Player
 
 		//shoot
 		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &ABasketballGameCharacter::Shoot);
+
+		//Sprint
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ABasketballGameCharacter::Sprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ABasketballGameCharacter::StopSprint);
 	}
 	else
 	{
@@ -220,6 +239,25 @@ void ABasketballGameCharacter::StopAim()
 	bIsAiming = false;
 }
 
+void Sprint()
+{
+
+	if (Stamina <= 3 && !bIsOutOfStamina)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 900.f;
+	}
+	
+}
+
+void StopSprint()
+{
+
+	if (Stamina <= 3 && !bIsOutOfStamina)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	}
+
+}
 
 
 
@@ -233,7 +271,9 @@ void ABasketballGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(ABasketballGameCharacter, ShootingPower);
 	DOREPLIFETIME(ABasketballGameCharacter, bIsAiming);
 	DOREPLIFETIME(ABasketballGameCharacter, BasketballRef);
-
+	DOREPLIFETIME(ABasketballGameCharacter, Stamina);
+	DOREPLIFETIME(ABasketballGameCharacter, bIsSprinting);
+	DOREPLIFETIME(ABasketballGameCharacter, bIsOutOfStamina);
 }
 
 
