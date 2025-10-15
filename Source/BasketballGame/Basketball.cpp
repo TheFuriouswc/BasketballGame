@@ -22,6 +22,7 @@ ABasketball::ABasketball()
 
 }
 
+
 void ABasketball::GetLifetimeReplicatedProps(TArray <FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -29,6 +30,8 @@ void ABasketball::GetLifetimeReplicatedProps(TArray <FLifetimeProperty>& OutLife
 
 	/*DOREPLIFETIME(ABasketball);*/
 }
+
+
 
 
 // Called when the game starts or when spawned

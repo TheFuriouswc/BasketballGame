@@ -18,7 +18,11 @@ ABasketballGameGameMode::ABasketballGameGameMode()
 	{
 		HUDClass = PlayerHudBPClass.Class;
 	}
-	
+	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_BasketballPlayerController"));
+	if (PlayerControllerBPClass.Class != NULL)
+	{
+		PlayerControllerClass = PlayerControllerBPClass.Class;
+	}
 
 
 }

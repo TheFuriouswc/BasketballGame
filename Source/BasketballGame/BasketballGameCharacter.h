@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "Kismet/GameplayStatics.h"
 #include "Basketball.h"
+#include "BasketballPlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BasketballGameCharacter.generated.h"
 
@@ -167,6 +168,13 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multi_CalledOnShootBall(bool IsAiming, ABasketball* BasketballReference);
 
+	UFUNCTION(Server, Reliable)
+	void Server_CalledOnSprint();
+
+	UFUNCTION(Server, Reliable)
+	void Server_CalledOnStopSprint();
+
+
 	UFUNCTION(BlueprintPure, Category = "Basketball Character | Getter Function")
 	float GetShootingPower() const { return ShootingPower; };
 
@@ -175,6 +183,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Basketball Character | Getter Function")
 	float GetStamina() const { return Stamina; };
+
 
 
 };

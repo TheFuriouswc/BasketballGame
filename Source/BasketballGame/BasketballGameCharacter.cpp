@@ -108,12 +108,13 @@ void ABasketballGameCharacter::Tick(float DeltaTime)
 	}
 
 
-	if (bIsSprinting && !bIsOutOfStamina)
+	if (bIsSprinting && !bIsOutOfStamina && GetCharacterMovement()->Velocity.Length() > 0)
 	{
 		Stamina -= DeltaTime;
 		if (Stamina <= 0)
 		{
 			bIsOutOfStamina = true;
+			bIsSprinting = false;
 			GetCharacterMovement()->MaxWalkSpeed = 300.f;
 		}
 		Stamina = FMath::Clamp(Stamina, 0.0f, 10.0f);
@@ -140,6 +141,29 @@ void ABasketballGameCharacter::Tick(float DeltaTime)
 	}
 }
 
+void ABasketballGameCharacter::Server_CalledOnSprint_Implementation()
+{
+	if (Stamina >= 3 && !bIsOutOfStamina)
+	{
+		bRegenStamina = false;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("set speed to 900"));
+		GetCharacterMovement()->MaxWalkSpeed = 900.f;
+		bIsSprinting = true;
+	}
+}
+
+
+void ABasketballGameCharacter::Server_CalledOnStopSprint_Implementation()
+{
+	if (Stamina >= 3 && !bIsOutOfStamina)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Set speed to 600"));
+		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+
+	}
+	bIsSprinting = false;
+	bRegenStamina = true;
+}
 
 
 void ABasketballGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -257,27 +281,15 @@ void ABasketballGameCharacter::StopAim()
 
 void ABasketballGameCharacter::Sprint()
 {
-
-	if (Stamina >= 3 && !bIsOutOfStamina)
-	{
-		bRegenStamina = false;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("set speed to 900"));
-		GetCharacterMovement()->MaxWalkSpeed = 900.f;
-		bIsSprinting = true;
-	}
+	Server_CalledOnSprint();
+	
 	
 }
 
 void ABasketballGameCharacter::StopSprint()
 {
-
-	if (Stamina >= 3 && !bIsOutOfStamina)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Set speed to 600"));
-		GetCharacterMovement()->MaxWalkSpeed = 600.f;
-		bIsSprinting = false;
-	}
-	bRegenStamina = true;
+	Server_CalledOnStopSprint();
+	
 }
 
 
