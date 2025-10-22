@@ -309,6 +309,7 @@ void ABasketballGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(ABasketballGameCharacter, bIsSprinting);
 	DOREPLIFETIME(ABasketballGameCharacter, bIsOutOfStamina);
 	DOREPLIFETIME(ABasketballGameCharacter, bRegenStamina);
+	DOREPLIFETIME(ABasketballGameCharacter, PlayersTeam);
 }
 
 

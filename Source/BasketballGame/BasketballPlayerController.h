@@ -17,6 +17,8 @@ class BASKETBALLGAME_API ABasketballPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 public:
 
 	UPROPERTY(EditAnywhere, Replicated, Category = "Player Controller | Players Team")

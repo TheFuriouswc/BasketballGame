@@ -4,6 +4,7 @@
 #include "Basketball.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
+#include "BasketballGameCharacter.h"
 #include "Logging/StructuredLog.h"
 
 
@@ -27,6 +28,7 @@ void ABasketball::GetLifetimeReplicatedProps(TArray <FLifetimeProperty>& OutLife
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ABasketball, BounceCount);
+	DOREPLIFETIME(ABasketball, TeamWhoOwnsBall);
 
 	/*DOREPLIFETIME(ABasketball);*/
 }
@@ -65,6 +67,13 @@ void ABasketball::AttachToPlayer(ACharacter* ActorWhoCalled)
 {
 		/*Mesh->SetSimulatePhysics(false);*/
 		Mesh->AttachToComponent(ActorWhoCalled->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("handSocket"));
+		
+		if (ABasketballGameCharacter* PlayerCharacter = Cast<ABasketballGameCharacter>(ActorWhoCalled))
+		{
+			TeamWhoOwnsBall = PlayerCharacter->PlayersTeam;
+		}
+
+
 		Multi_SetPramas(ActorWhoCalled);
 	
 	

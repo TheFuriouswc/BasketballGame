@@ -2,8 +2,18 @@
 
 #include "BasketballGameGameMode.h"
 #include "BasketballGameCharacter.h"
+#include "Net/UnrealNetwork.h"
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/HUD.h"
+
+void ABasketballGameGameMode::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABasketballGameGameMode, HomeTeamScore);
+	DOREPLIFETIME(ABasketballGameGameMode, AwayTeamScore);
+
+}
 
 ABasketballGameGameMode::ABasketballGameGameMode()
 {

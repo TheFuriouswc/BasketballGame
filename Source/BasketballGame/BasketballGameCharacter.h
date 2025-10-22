@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameplayTagsManager.h"
 #include "Logging/LogMacros.h"
 #include "Kismet/GameplayStatics.h"
 #include "Basketball.h"
@@ -26,6 +27,8 @@ UCLASS(config = Game)
 class ABasketballGameCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
+	UGameplayTagsManager& TagsManager = UGameplayTagsManager::Get();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -104,6 +107,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
 	bool bRegenStamina = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true)
+	FGameplayTag PlayersTeam = TagsManager.RequestGameplayTag(FName("Team"));
+
+
 
 #pragma endregion Stamina
 

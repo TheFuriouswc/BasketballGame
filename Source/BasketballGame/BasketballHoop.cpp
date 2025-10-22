@@ -1,0 +1,72 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "BasketballHoop.h"
+#include "Net/UnrealNetwork.h"
+#include "Components/CapsuleComponent.h"
+
+// Sets default values
+ABasketballHoop::ABasketballHoop()
+{
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true;
+
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	Mesh->SetupAttachment(RootComponent);
+	Mesh->SetIsReplicated(true);
+
+	ScoreCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("ScoreCapsule"));
+	ScoreCapsule->SetupAttachment(Mesh);
+	ScoreCapsule->InitCapsuleSize(30.f, 30.f);
+	ScoreCapsule->SetGenerateOverlapEvents(true);
+
+	GameMode = Cast<ABasketballGameGameMode>(GetWorld());
+
+
+}
+
+// Called when the game starts or when spawned
+void ABasketballHoop::BeginPlay()
+{
+	Super::BeginPlay();
+	
+}
+
+// Called every frame
+void ABasketballHoop::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
+{
+	if (ABasketball* Shootball = Cast<ABasketball>(Ball))
+	{
+
+		if (Shootball->TeamWhoOwnsBall.MatchesTagExact(FGameplayTag::RequestGameplayTag(FName("Team.Home"))))
+		{
+			if (GameMode)
+			{
+				GameMode->HomeTeamScore += 1;
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Gamemode not valid"));
+			}
+			
+		}
+
+
+
+	}
+
+
+
+
+
+
+
+}
+

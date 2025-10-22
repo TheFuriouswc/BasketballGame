@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "InteractInterface.h"
+#include "GameplayTagsManager.h"
 #include "TeamsEnum.h"
-#include "BasketballGameCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Basketball.generated.h"
 
@@ -16,6 +16,7 @@ class BASKETBALLGAME_API ABasketball : public AActor, public IInteractInterface
 {
 	GENERATED_BODY()
 
+	UGameplayTagsManager& TagsManager = UGameplayTagsManager::Get();
 	virtual void CallInteract(ACharacter* ActorWhoCalled) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 public:	
@@ -32,6 +33,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Replicated, Category = "Player Controller | Players Team")
 	ETeamsEnum PlayersTeam;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true)
+	FGameplayTag TeamWhoOwnsBall = TagsManager.RequestGameplayTag(FName("Team"));
+
 
 	FTimerHandle testTimerHandle;
 protected:
