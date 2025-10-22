@@ -21,7 +21,7 @@ ABasketballHoop::ABasketballHoop()
 	ScoreCapsule->InitCapsuleSize(30.f, 30.f);
 	ScoreCapsule->SetGenerateOverlapEvents(true);
 
-	GameMode = Cast<ABasketballGameGameMode>(GetWorld());
+	//GameMode = Cast<ABasketballGameGameMode>(GetWorld());
 
 
 }
@@ -50,12 +50,18 @@ void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
 			if (GameMode)
 			{
 				GameMode->HomeTeamScore += 1;
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Add Score"));
 			}
 			else
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Gamemode not valid"));
 			}
 			
+	
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Tag doesn't match"));
 		}
 
 

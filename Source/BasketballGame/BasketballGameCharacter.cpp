@@ -191,7 +191,7 @@ void ABasketballGameCharacter::SetupPlayerInputComponent(UInputComponent* Player
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ABasketballGameCharacter::StopAim);
 
 		//shoot
-		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &ABasketballGameCharacter::Shoot);
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &ABasketballGameCharacter::Shoot);
 
 		//Sprint
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ABasketballGameCharacter::Sprint);
@@ -389,9 +389,15 @@ void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAi
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Kobe!"));
 
 
-		BasketballReference->Mesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-		BasketballReference->Mesh->SetupAttachment(RootComponent);
-		//Launch Anle
+		
+		if (BasketballRef->Mesh->IsAttachedTo(this->GetMesh()))
+		{
+			BasketballReference->Mesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+			
+		}
+	/*	BasketballReference->Mesh->SetupAttachment(BasketballReference->GetRootComponent());*/
+		
+		//Launch Angle
 		FRotator LaunchRot = Camera->GetComponentRotation();
 		LaunchRot.Pitch += 35.0f;
 		FVector ShootDirection = LaunchRot.Vector();
@@ -407,8 +413,16 @@ void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAi
 	else if (BasketballReference)
 	{
 		ShootingPower = 0.50f;
-		BasketballReference->Mesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-		BasketballReference->Mesh->SetupAttachment(RootComponent);
+
+
+		if (BasketballRef->Mesh->IsAttachedTo(this->GetMesh()))
+		{
+			BasketballReference->Mesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+		}
+		/*BasketballReference->Mesh->SetupAttachment(BasketballReference->GetRootComponent());*/
+
+
 		//Launch Anle
 		FRotator LaunchRot = Camera->GetComponentRotation();
 		LaunchRot.Pitch += 45.0f;

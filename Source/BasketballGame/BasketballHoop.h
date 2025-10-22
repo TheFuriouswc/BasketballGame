@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Basketball.h"
 #include "GameplayTagsManager.h"
+#include "Kismet/GameplayStatics.h"
 #include "BasketballGameGameMode.h"
 #include "BasketballHoop.generated.h"
 
@@ -25,7 +26,7 @@ public:
 	class UCapsuleComponent* ScoreCapsule;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	ABasketballGameGameMode* GameMode;
+	ABasketballGameGameMode* GameMode = Cast<ABasketballGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
 
 protected:
