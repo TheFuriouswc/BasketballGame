@@ -8,6 +8,7 @@
 #include "GameplayTagsManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "BasketballGameGameMode.h"
+#include "BasketballGameState.h"
 #include "BasketballHoop.generated.h"
 
 UCLASS()
@@ -27,6 +28,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	ABasketballGameGameMode* GameMode = Cast<ABasketballGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ABasketballGameState* GameState = Cast<ABasketballGameState>(UGameplayStatics::GetGameState(GetWorld()));
 
 
 protected:

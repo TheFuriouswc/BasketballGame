@@ -45,11 +45,11 @@ void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
 	if (ABasketball* Shootball = Cast<ABasketball>(Ball))
 	{
 
-		if (Shootball->TeamWhoOwnsBall.MatchesTagExact(FGameplayTag::RequestGameplayTag(FName("Team.Home"))))
+		if (Shootball->TeamWhoOwnsBall.MatchesTagExact(FGameplayTag::RequestGameplayTag(FName("Team.Home"))) && Ball)
 		{
-			if (GameMode)
+			if (GameState)
 			{
-				GameMode->HomeTeamScore += 1;
+				GameState->HomeTeamScoreState += 1;
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Add Score"));
 			}
 			else

@@ -33,6 +33,12 @@ ABasketballGameGameMode::ABasketballGameGameMode()
 	{
 		PlayerControllerClass = PlayerControllerBPClass.Class;
 	}
+	
+	/*static ConstructorHelpers::FClassFinder<AGameStateBase> GameGameStateBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_BasketballGameGameState"));
+	if (GameGameStateBPClass.Class != NULL)
+	{
+		GameStateClass = GameGameStateBPClass.Class;
+	}*/
 
 
 }
