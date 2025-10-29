@@ -310,6 +310,7 @@ void ABasketballGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(ABasketballGameCharacter, bIsOutOfStamina);
 	DOREPLIFETIME(ABasketballGameCharacter, bRegenStamina);
 	DOREPLIFETIME(ABasketballGameCharacter, PlayersTeam);
+	DOREPLIFETIME(ABasketballGameCharacter, PointsToAwardPlayer);
 }
 
 
@@ -384,11 +385,14 @@ void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAi
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Shoot ball Server"));
 
+
+
+
 	if (IsAiming && BasketballReference)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Kobe!"));
-
-
+		
+		BasketballReference->PointsToAward = PointsToAwardPlayer;
 		
 		if (BasketballRef->Mesh->IsAttachedTo(this->GetMesh()))
 		{
@@ -413,7 +417,8 @@ void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAi
 	else if (BasketballReference)
 	{
 		ShootingPower = 0.50f;
-
+		
+		BasketballReference->PointsToAward = PointsToAwardPlayer;
 
 		if (BasketballRef->Mesh->IsAttachedTo(this->GetMesh()))
 		{
@@ -479,7 +484,7 @@ void ABasketballGameCharacter::Multi_CalledOnShootBall_Implementation(bool IsAim
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Kobe!"));
 
-
+	
 
 		BasketballReference->Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		BasketballReference->Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);

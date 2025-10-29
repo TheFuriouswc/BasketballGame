@@ -34,8 +34,11 @@ public:
 	UPROPERTY(EditAnywhere, Replicated, Category = "Player Controller | Players Team")
 	ETeamsEnum PlayersTeam;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	FGameplayTag TeamWhoOwnsBall = TagsManager.RequestGameplayTag(FName("Team"));
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	FGameplayTag PointsToAward = TagsManager.RequestGameplayTag(FName("Score"));
 
 
 	FTimerHandle testTimerHandle;

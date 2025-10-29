@@ -16,6 +16,9 @@ class BASKETBALLGAME_API ABasketballHoop : public AActor
 {
 	GENERATED_BODY()
 	UGameplayTagsManager& TagsManager = UGameplayTagsManager::Get();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 public:	
 	// Sets default values for this actor's properties
 	ABasketballHoop();
@@ -31,6 +34,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ABasketballGameGameStateBase* GameState = Cast<ABasketballGameGameStateBase>(UGameplayStatics::GetGameState(GetWorld()));
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	int Score = 3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	FGameplayTag WhoBasketballHooop = TagsManager.RequestGameplayTag(FName("Team"));
+
 
 
 protected:

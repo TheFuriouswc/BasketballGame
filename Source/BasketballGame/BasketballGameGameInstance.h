@@ -47,17 +47,17 @@ class BASKETBALLGAME_API UBasketballGameGameInstance : public UAdvancedFriendsGa
 public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, Category = "Basketball Game | Game Instance")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Basketball Game | Game Instance")
 	FString ServerName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, Category = "Basketball Game | Game Instance")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Basketball Game | Game Instance")
 	FString ServerMap;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, Category = "Basketball Game | Game Instance")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Basketball Game | Game Instance")
 	int ServerSlots;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, Category = "Basketball Game | Game Instance")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Basketball Game | Game Instance")
 	FString Password;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, Category = "Basketball Game | Game Instance")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Basketball Game | Game Instance")
 	FString LobbyCode;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, Category = "Basketball Game | Game Instance")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "Basketball Game | Game Instance")
 	bool bHasPassword;
 
 	

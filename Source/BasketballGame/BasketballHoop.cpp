@@ -5,6 +5,14 @@
 #include "Net/UnrealNetwork.h"
 #include "Components/CapsuleComponent.h"
 
+void ABasketballHoop::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABasketballHoop, Score);
+	DOREPLIFETIME(ABasketballHoop, WhoBasketballHooop);
+}
+
 // Sets default values
 ABasketballHoop::ABasketballHoop()
 {
@@ -45,11 +53,22 @@ void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
 	if (ABasketball* Shootball = Cast<ABasketball>(Ball))
 	{
 
+
+		if (Shootball->PointsToAward.MatchesTagExact(FGameplayTag::RequestGameplayTag(FName("Score.ThreePoints"))) && Ball)
+		{
+			Score = 3;
+		}
+		else if (Shootball->PointsToAward.MatchesTagExact(FGameplayTag::RequestGameplayTag(FName("Score.OnePoints"))) && Ball)
+		{
+			Score = 1;
+		}
+
+
 		if (Shootball->TeamWhoOwnsBall.MatchesTagExact(FGameplayTag::RequestGameplayTag(FName("Team.Home"))) && Ball)
 		{
 			if (GameState)
 			{
-				GameState->HomeTeamScoreState += 1;
+				GameState->HomeTeamScoreState += Score;
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Add Score"));
 			}
 			else
@@ -58,6 +77,18 @@ void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
 			}
 			
 	
+		}
+		else if (Shootball->TeamWhoOwnsBall.MatchesTagExact(FGameplayTag::RequestGameplayTag(FName("Team.Away"))) && Ball)
+		{
+			if (GameState)
+			{
+				GameState->AwayTeamScoreState += Score;
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Add Score"));
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Gamemode not valid"));
+			}
 		}
 		else
 		{

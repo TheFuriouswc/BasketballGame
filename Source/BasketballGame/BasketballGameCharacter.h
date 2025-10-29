@@ -84,39 +84,41 @@ class ABasketballGameCharacter : public ACharacter
 public:
 	ABasketballGameCharacter();
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated, meta = (AllowPrivateAccess = "true"))
 	float CameraPitch = 0.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	float ShootingPower = 0.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	bool bIsAiming = false;
 
 #pragma region 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	float Stamina = 10.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	float MaxStamina = 10.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	bool bIsSprinting = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	bool bIsOutOfStamina = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	bool bRegenStamina = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated = true)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	FGameplayTag PlayersTeam = TagsManager.RequestGameplayTag(FName("Team"));
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	FGameplayTag PointsToAwardPlayer = TagsManager.RequestGameplayTag(FName("Score.ThreePoints"));
 
 #pragma endregion Stamina
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated = true, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated, meta = (AllowPrivateAccess = "true"))
 	ABasketball* BasketballRef;
 
 protected:

@@ -29,6 +29,8 @@ void ABasketball::GetLifetimeReplicatedProps(TArray <FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ABasketball, BounceCount);
 	DOREPLIFETIME(ABasketball, TeamWhoOwnsBall);
+	DOREPLIFETIME(ABasketball, PointsToAward);
+
 
 	/*DOREPLIFETIME(ABasketball);*/
 }
