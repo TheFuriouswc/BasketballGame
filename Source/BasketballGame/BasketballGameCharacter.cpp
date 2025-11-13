@@ -147,7 +147,7 @@ void ABasketballGameCharacter::Server_CalledOnSprint_Implementation()
 	{
 		bRegenStamina = false;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("set speed to 900"));
-		GetCharacterMovement()->MaxWalkSpeed = 900.f;
+		GetCharacterMovement()->MaxWalkSpeed = MaxSprintSpeed;
 		bIsSprinting = true;
 	}
 }
@@ -311,6 +311,7 @@ void ABasketballGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(ABasketballGameCharacter, bRegenStamina);
 	DOREPLIFETIME(ABasketballGameCharacter, PlayersTeam);
 	DOREPLIFETIME(ABasketballGameCharacter, PointsToAwardPlayer);
+	DOREPLIFETIME(ABasketballGameCharacter, MaxSprintSpeed);
 }
 
 

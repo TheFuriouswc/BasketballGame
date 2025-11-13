@@ -108,6 +108,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	bool bRegenStamina = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
+	float MaxSprintSpeed = 900.0f;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	FGameplayTag PlayersTeam = TagsManager.RequestGameplayTag(FName("Team"));
 
