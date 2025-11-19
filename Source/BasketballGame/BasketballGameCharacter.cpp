@@ -110,23 +110,27 @@ void ABasketballGameCharacter::Tick(float DeltaTime)
 
 	if (bIsSprinting && !bIsOutOfStamina && GetCharacterMovement()->Velocity.Length() > 0)
 	{
-		Stamina -= DeltaTime;
+		if (bDrainStamina)
+		{
+			Stamina -= DeltaTime;
+		}
+		
 		if (Stamina <= 0)
 		{
 			bIsOutOfStamina = true;
 			bIsSprinting = false;
-			GetCharacterMovement()->MaxWalkSpeed = 300.f;
+			GetCharacterMovement()->MaxWalkSpeed = OutOfStaminaSpeed;
 		}
 		Stamina = FMath::Clamp(Stamina, 0.0f, 10.0f);
 	}
 	else if (Stamina <= 3)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Set speed to 300"));
-		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		GetCharacterMovement()->MaxWalkSpeed = OutOfStaminaSpeed;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("Set speed to %f"), GetCharacterMovement()->MaxWalkSpeed));
 	}
 	else if (Stamina > 3)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	}
 
 	if (bRegenStamina)
@@ -146,8 +150,8 @@ void ABasketballGameCharacter::Server_CalledOnSprint_Implementation()
 	if (Stamina >= 3 && !bIsOutOfStamina)
 	{
 		bRegenStamina = false;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("set speed to 900"));
 		GetCharacterMovement()->MaxWalkSpeed = MaxSprintSpeed;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("Set speed to %f"), GetCharacterMovement()->MaxWalkSpeed));
 		bIsSprinting = true;
 	}
 }
@@ -157,8 +161,9 @@ void ABasketballGameCharacter::Server_CalledOnStopSprint_Implementation()
 {
 	if (Stamina >= 3 && !bIsOutOfStamina)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Set speed to 600"));
-		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("Set speed to %f"), GetCharacterMovement()->MaxWalkSpeed));
+		
 
 	}
 	bIsSprinting = false;
@@ -312,6 +317,9 @@ void ABasketballGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(ABasketballGameCharacter, PlayersTeam);
 	DOREPLIFETIME(ABasketballGameCharacter, PointsToAwardPlayer);
 	DOREPLIFETIME(ABasketballGameCharacter, MaxSprintSpeed);
+	DOREPLIFETIME(ABasketballGameCharacter, bDrainStamina);
+	DOREPLIFETIME(ABasketballGameCharacter, WalkSpeed);
+	DOREPLIFETIME(ABasketballGameCharacter, OutOfStaminaSpeed);
 }
 
 

@@ -106,10 +106,19 @@ public:
 	bool bIsOutOfStamina = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
+	bool bDrainStamina = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	bool bRegenStamina = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	float MaxSprintSpeed = 900.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
+
+	float WalkSpeed = 600.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
+	float OutOfStaminaSpeed = 300.0f;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
@@ -119,12 +128,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	FGameplayTag PointsToAwardPlayer = TagsManager.RequestGameplayTag(FName("Score.ThreePoints"));
 
+
 #pragma endregion Stamina
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated, meta = (AllowPrivateAccess = "true"))
 	ABasketball* BasketballRef;
 
+	const float DefaultMaxSprintSpeed = 900.0f;
+	const float DefaultWalkSpeed = 600.0f;
+	const float DefaultOutOfStaminaSpeed = 300.0f;
 protected:
 
 	/** Called for movement input */

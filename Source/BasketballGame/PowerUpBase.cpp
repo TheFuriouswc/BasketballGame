@@ -2,7 +2,17 @@
 
 
 #include "PowerUpBase.h"
+#include "Net/UnrealNetwork.h"
 #include "Components/CapsuleComponent.h"
+
+void APowerUpBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	DOREPLIFETIME(APowerUpBase, EnergyDrinkSpeed);
+	DOREPLIFETIME(APowerUpBase, PowerUpTimer);
+	DOREPLIFETIME(APowerUpBase, StartPowerupTimer);
+	DOREPLIFETIME(APowerUpBase, PlayerWhoHasPowerUp);
+
+}
 
 // Sets default values
 APowerUpBase::APowerUpBase()
@@ -33,6 +43,38 @@ void APowerUpBase::BeginPlay()
 void APowerUpBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	if (StartPowerupTimer && PowerUpTimer > 0)
+	{
+		PowerUpTimer -= 1;
+	}
+	PowerUpTimer = FMath::Clamp(PowerUpTimer, 0.0f, 10.0f);
 
+	if (StartPowerupTimer && PowerUpTimer <= 0)
+	{
+		Server_ResetWalkSpeed(PlayerWhoHasPowerUp);
+	}
+
+}
+
+void APowerUpBase::Server_ResetWalkSpeed_Implementation(ABasketballGameCharacter* PlayerCharacter)
+{
+	PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed = PlayerCharacter->DefaultWalkSpeed;
+	PlayerCharacter->MaxSprintSpeed = PlayerCharacter->DefaultMaxSprintSpeed;
+	PlayerCharacter->bDrainStamina = true;
+	StartPowerupTimer = false;
+	PlayerWhoHasPowerUp = nullptr;
+	PowerUpTimer = 10.0f;
+
+}
+
+void APowerUpBase::Server_OnDrinkEnergyDrink_Implementation(ABasketballGameCharacter* PlayerCharacter)
+{
+
+	PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed = PlayerCharacter->MaxSprintSpeed;
+	PlayerCharacter->MaxSprintSpeed = EnergyDrinkSpeed;
+	PlayerCharacter->bDrainStamina = false;
+	StartPowerupTimer = true;
+	PlayerWhoHasPowerUp = PlayerCharacter;
 }
 
