@@ -10,5 +10,6 @@ void ABasketballGameGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimePr
 
 	DOREPLIFETIME(ABasketballGameGameStateBase, HomeTeamScoreState);
 	DOREPLIFETIME(ABasketballGameGameStateBase, AwayTeamScoreState);
+	DOREPLIFETIME(ABasketballGameGameStateBase, hasGameStarted);
 }
 

@@ -120,6 +120,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	float OutOfStaminaSpeed = 300.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
+	bool bHasBasketball = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
+	bool bIsRagdolled = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
+	float RagDollTime = 2.0f;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	FGameplayTag PlayersTeam = TagsManager.RequestGameplayTag(FName("Team"));
@@ -135,6 +144,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated, meta = (AllowPrivateAccess = "true"))
 	ABasketball* BasketballRef;
 
+
+	const float MaxRagDollTime = 2.0f;
 	const float DefaultMaxSprintSpeed = 900.0f;
 	const float DefaultWalkSpeed = 600.0f;
 	const float DefaultOutOfStaminaSpeed = 300.0f;
@@ -188,6 +199,10 @@ public:
 	UFUNCTION(Server, Reliable)
 	void Server_CalledOnInteract();
 
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multi_CalledOnInteract(ABasketball* Ball);
+
 	UFUNCTION(Server, Reliable)
 	void Server_CalledOnShootBall(bool IsAiming, ABasketball* BasketballReference, UCameraComponent* Camera, float ShootPower);
 
@@ -200,6 +215,9 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void Server_CalledOnStopSprint();
+
+	UFUNCTION(Server, Reliable)
+	void Server_CalledHasRagdolled();
 
 
 	UFUNCTION(BlueprintPure, Category = "Basketball Character | Getter Function")

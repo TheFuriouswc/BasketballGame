@@ -46,7 +46,7 @@ void APowerUpBase::Tick(float DeltaTime)
 	
 	if (StartPowerupTimer && PowerUpTimer > 0)
 	{
-		PowerUpTimer -= 1;
+		PowerUpTimer -= DeltaTime;
 	}
 	PowerUpTimer = FMath::Clamp(PowerUpTimer, 0.0f, 10.0f);
 

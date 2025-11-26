@@ -23,6 +23,10 @@ public:
 	UPROPERTY(EditAnywhere, Replicated, Category = "BasketballGameMode | Score")
 	float AwayTeamScore = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "BasketballGameMode | Score")
+	bool bStartGame = false;
+
+
 
 public:
 	UFUNCTION(BlueprintPure, Category = "BasketballGameMode | Getter Function")

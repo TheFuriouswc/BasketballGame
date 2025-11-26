@@ -12,6 +12,7 @@ void ABasketballGameGameMode::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 
 	DOREPLIFETIME(ABasketballGameGameMode, HomeTeamScore);
 	DOREPLIFETIME(ABasketballGameGameMode, AwayTeamScore);
+	DOREPLIFETIME(ABasketballGameGameMode, bStartGame);
 
 }
 

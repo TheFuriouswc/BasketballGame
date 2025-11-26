@@ -143,6 +143,19 @@ void ABasketballGameCharacter::Tick(float DeltaTime)
 		}
 		Stamina = FMath::Clamp(Stamina, 0.0f, 10.0f);
 	}
+
+
+	if (bIsRagdolled)
+	{
+		RagDollTime -= DeltaTime;
+
+		if (RagDollTime <= 0)
+		{
+			/*Server_CalledHasRagdolled();*/
+		}
+
+		RagDollTime = FMath::Clamp(RagDollTime, 0.0f, MaxRagDollTime);
+	}
 }
 
 void ABasketballGameCharacter::Server_CalledOnSprint_Implementation()
@@ -320,6 +333,9 @@ void ABasketballGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(ABasketballGameCharacter, bDrainStamina);
 	DOREPLIFETIME(ABasketballGameCharacter, WalkSpeed);
 	DOREPLIFETIME(ABasketballGameCharacter, OutOfStaminaSpeed);
+	DOREPLIFETIME(ABasketballGameCharacter, bHasBasketball);
+	DOREPLIFETIME(ABasketballGameCharacter, bIsRagdolled);
+	DOREPLIFETIME(ABasketballGameCharacter, RagDollTime);
 }
 
 
@@ -381,6 +397,7 @@ void  ABasketballGameCharacter::Server_CalledOnInteract_Implementation()
 			BasketballRef = Cast<ABasketball>(HitActor);
 			BasketballRef->SetOwner(this);
 			InteractableActor->CallInteract(this);
+			Multi_CalledOnInteract(BasketballRef);
 
 		}
 	}
@@ -389,6 +406,21 @@ void  ABasketballGameCharacter::Server_CalledOnInteract_Implementation()
 
 
 }
+
+void ABasketballGameCharacter::Multi_CalledOnInteract_Implementation(ABasketball* Ball)
+{
+	if (Ball)
+	{
+		bHasBasketball = true;
+	}
+	else
+	{
+		bHasBasketball = false;
+	}
+
+}
+
+
 
 void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAiming, ABasketball* BasketballReference, UCameraComponent* Camera, float ShootPower)
 {
@@ -399,6 +431,7 @@ void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAi
 
 	if (IsAiming && BasketballReference)
 	{
+		bHasBasketball = false;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Kobe!"));
 		
 		BasketballReference->PointsToAward = PointsToAwardPlayer;
@@ -450,7 +483,7 @@ void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAi
 		BasketballReference->ProjectileMovementComponent->bShouldBounce = true;
 		BasketballReference->Mesh->AddImpulse(Power, NAME_None, true);
 
-
+		bHasBasketball = false;
 	}
 
 
@@ -509,3 +542,20 @@ void ABasketballGameCharacter::Multi_CalledOnShootBall_Implementation(bool IsAim
 
 }
 
+void ABasketballGameCharacter::Server_CalledHasRagdolled_Implementation()
+{
+	
+	
+	GetMesh()->SetSimulatePhysics(false);
+	GetMesh()->SetCollisionProfileName("CharacterMesh");
+	CameraBoom->SetupAttachment(GetMesh(), FName("head"));
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	GetMesh()->SetRelativeRotation(FRotator(0, 0, 270));
+	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
+	bIsRagdolled = false;
+	
+	
+	RagDollTime = MaxRagDollTime;
+
+
+}

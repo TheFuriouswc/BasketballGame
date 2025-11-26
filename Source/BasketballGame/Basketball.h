@@ -40,6 +40,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	FGameplayTag PointsToAward = TagsManager.RequestGameplayTag(FName("Score"));
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	bool OnFire = false;
+
 
 	FTimerHandle testTimerHandle;
 protected:

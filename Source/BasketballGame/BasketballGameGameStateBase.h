@@ -22,11 +22,14 @@ class BASKETBALLGAME_API ABasketballGameGameStateBase : public AGameStateBase
 
 
 public:
-	UPROPERTY(EditAnywhere, Replicated, Category = "BasketballGameMode | Score")
+	UPROPERTY(EditAnywhere, Replicated, Category = "BasketballGameStateMode | Score")
 	float HomeTeamScoreState = 0;
 
-	UPROPERTY(EditAnywhere, Replicated, Category = "BasketballGameMode | Score")
+	UPROPERTY(EditAnywhere, Replicated, Category = "BasketballGameStateMode | Score")
 	float AwayTeamScoreState = 0;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Replicated, Category = "BasketballGameStateMode | Score")
+	bool hasGameStarted = false;
 
 public:
 
