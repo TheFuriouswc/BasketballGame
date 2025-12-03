@@ -28,15 +28,38 @@ public:
 	UPROPERTY(EditAnywhere, Replicated, Category = "BasketballGameStateMode | Score")
 	float AwayTeamScoreState = 0;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Replicated, Category = "BasketballGameStateMode | Score")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "BasketballGameStateMode | Timer")
+	float Minutes = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "BasketballGameStateMode | Timer")
+	float Seconds = 0;
+
+	UPROPERTY(EditAnywhere, Replicated, Category = "BasketballGameStateMode | Timer")
+	float Delta;
+
+
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Replicated, Category = "BasketballGameStateMode | Game Logic")
 	bool hasGameStarted = false;
 
 public:
 
+	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintPure, Category = "BasketballGameState | Getter Function")
 	float GetHomeTeamScoreState() const { return HomeTeamScoreState; };
 	UFUNCTION(BlueprintPure, Category = "BasketballGameState | Getter Function")
 	float GetAwayTeamScoreState() const { return AwayTeamScoreState; };
+
+	UFUNCTION(BlueprintPure, Category = "BasketballGameState | Getter Function")
+	float GetMatachTimerMinutes() const { return Minutes; };
+	UFUNCTION(BlueprintPure, Category = "BasketballGameState | Getter Function")
+	float GetMatachTimerSeconds() const { return Seconds; };
+
+
+
+
+	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "BasketballGameState | Game Logic")
+	void MatchTimer();
 
 };

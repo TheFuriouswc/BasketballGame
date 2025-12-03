@@ -11,5 +11,48 @@ void ABasketballGameGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimePr
 	DOREPLIFETIME(ABasketballGameGameStateBase, HomeTeamScoreState);
 	DOREPLIFETIME(ABasketballGameGameStateBase, AwayTeamScoreState);
 	DOREPLIFETIME(ABasketballGameGameStateBase, hasGameStarted);
+	DOREPLIFETIME(ABasketballGameGameStateBase, Seconds);
+	DOREPLIFETIME(ABasketballGameGameStateBase, Minutes);
+}
+
+void ABasketballGameGameStateBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	Delta = DeltaTime;
+
+}
+
+void ABasketballGameGameStateBase::MatchTimer_Implementation()
+{
+
+	if (Seconds <= 0)
+	{
+		Seconds = 59.0f;
+		Minutes -= Delta;
+		if (Minutes < 0.0f)
+		{
+			Seconds = 0;
+			Minutes = 0;
+		}
+	}
+	else
+	{
+		Seconds -= Delta;
+
+		if (Seconds < 0.0f)
+		{
+			Seconds += 59.0f;
+			Minutes -= 1.0f;
+
+			if (Minutes < 0.0f)
+			{
+				Minutes = 0.0f;
+				Seconds = 0.0f;
+			}
+		}
+	}
+
+
 }
 
