@@ -277,7 +277,7 @@ void ABasketballGameCharacter::Interact()
 
 	Server_CalledOnInteract();
 	
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact button fired"));
+	/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact button fired"));*/
 	
 
 }
@@ -393,7 +393,7 @@ void  ABasketballGameCharacter::Server_CalledOnInteract_Implementation()
 
 		if (InteractableActor)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact with an object"));
+			/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Interact with an object"));*/
 			BasketballRef = Cast<ABasketball>(HitActor);
 			BasketballRef->SetOwner(this);
 			InteractableActor->CallInteract(this);
@@ -501,13 +501,13 @@ void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAi
 
 void ABasketballGameCharacter::Multi_CalledOnShootBall_Implementation(bool IsAiming, ABasketball* BasketballReference)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Shoot ball client"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Shoot ball client"));
 
 
 
 	if (IsAiming && BasketballReference)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Kobe!"));
+		/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Kobe!"));*/
 
 
 
@@ -524,7 +524,7 @@ void ABasketballGameCharacter::Multi_CalledOnShootBall_Implementation(bool IsAim
 	}
 	else if (BasketballRef)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Kobe!"));
+		/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Kobe!"));*/
 
 	
 

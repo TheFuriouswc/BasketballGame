@@ -56,7 +56,7 @@ void ABasketball::Tick(float DeltaTime)
 
 void ABasketball::CallInteract(ACharacter* ActorWhoCalled)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Called"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Called"));
 
 
 	AttachToPlayer(ActorWhoCalled);
@@ -77,6 +77,7 @@ void ABasketball::AttachToPlayer(ACharacter* ActorWhoCalled)
 
 
 			PlayerWhoShot = Cast<ABasketballPlayerController>(PlayerCharacter->GetController());
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("PlayerController: %s"), *PlayerWhoShot->GetName()));
 
 		}
 
@@ -89,7 +90,7 @@ void ABasketball::AttachToPlayer(ACharacter* ActorWhoCalled)
 void ABasketball::Multi_SetPramas_Implementation(ACharacter* ActorWhoCalled)
 {
 	Mesh->SetSimulatePhysics(false);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Server called"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Server called"));
 	Mesh->SetWorldScale3D(Mesh->GetComponentScale() / ActorWhoCalled->GetMesh()->GetComponentScale());
 }
 

@@ -51,6 +51,8 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+
+#pragma region
 	UFUNCTION(BlueprintPure, Category = "BasketballGameState | Getter Function")
 	float GetHomeTeamScoreState() const { return HomeTeamScoreState; };
 	UFUNCTION(BlueprintPure, Category = "BasketballGameState | Getter Function")
@@ -60,6 +62,9 @@ public:
 	float GetMatachTimerMinutes() const { return Minutes; };
 	UFUNCTION(BlueprintPure, Category = "BasketballGameState | Getter Function")
 	float GetMatachTimerSeconds() const { return Seconds; };
+
+
+#pragma endregion Getter Functions
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnRep_HomeTeamScoreState();
