@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "InteractInterface.h"
 #include "GameplayTagsManager.h"
+#include "BasketballPlayerController.h"
 #include "TeamsEnum.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Basketball.generated.h"
@@ -30,6 +31,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	int BounceCount = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
+	ABasketballPlayerController* PlayerWhoShot;
 
 	UPROPERTY(EditAnywhere, Replicated, Category = "Player Controller | Players Team")
 	ETeamsEnum PlayersTeam;

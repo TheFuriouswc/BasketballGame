@@ -38,6 +38,10 @@ void ABasketballGameGameStateBase::MatchTimer_Implementation()
 	}
 	else
 	{
+		if (Seconds == 0 && Minutes == 0)
+		{
+
+		}
 		Seconds -= Delta;
 
 		if (Seconds < 0.0f)

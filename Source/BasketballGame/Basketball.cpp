@@ -31,7 +31,7 @@ void ABasketball::GetLifetimeReplicatedProps(TArray <FLifetimeProperty>& OutLife
 	DOREPLIFETIME(ABasketball, TeamWhoOwnsBall);
 	DOREPLIFETIME(ABasketball, PointsToAward);
 	DOREPLIFETIME(ABasketball, OnFire);
-
+	DOREPLIFETIME(ABasketball, PlayerWhoShot);
 
 	/*DOREPLIFETIME(ABasketball);*/
 }
@@ -74,6 +74,10 @@ void ABasketball::AttachToPlayer(ACharacter* ActorWhoCalled)
 		if (ABasketballGameCharacter* PlayerCharacter = Cast<ABasketballGameCharacter>(ActorWhoCalled))
 		{
 			TeamWhoOwnsBall = PlayerCharacter->PlayersTeam;
+
+
+			PlayerWhoShot = Cast<ABasketballPlayerController>(PlayerCharacter->GetController());
+
 		}
 
 

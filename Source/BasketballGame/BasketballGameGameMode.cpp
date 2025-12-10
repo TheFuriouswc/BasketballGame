@@ -19,7 +19,7 @@ void ABasketballGameGameMode::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 ABasketballGameGameMode::ABasketballGameGameMode()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_BasketBallPlayer"));
+	/*static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_BasketBallPlayer"));
 	if (PlayerPawnBPClass.Class != NULL)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
@@ -34,7 +34,7 @@ ABasketballGameGameMode::ABasketballGameGameMode()
 	{
 		PlayerControllerClass = PlayerControllerBPClass.Class;
 	}
-	
+	*/
 	/*static ConstructorHelpers::FClassFinder<AGameStateBase> GameGameStateBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_BasketballGameGameState"));
 	if (GameGameStateBPClass.Class != NULL)
 	{

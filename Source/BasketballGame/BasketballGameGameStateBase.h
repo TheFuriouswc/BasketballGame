@@ -6,6 +6,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
 #include "Net/UnrealNetwork.h"
+#include "BasketballPlayerController.h"
 #include "BasketballGameGameMode.h"
 #include "GameFramework/GameStateBase.h"
 #include "BasketballGameGameStateBase.generated.h"
@@ -22,11 +23,15 @@ class BASKETBALLGAME_API ABasketballGameGameStateBase : public AGameStateBase
 
 
 public:
-	UPROPERTY(EditAnywhere, Replicated, Category = "BasketballGameStateMode | Score")
+	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_HomeTeamScoreState, Category = "BasketballGameStateMode | Score")
 	float HomeTeamScoreState = 0;
 
-	UPROPERTY(EditAnywhere, Replicated, Category = "BasketballGameStateMode | Score")
+	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_AwayTeamScoreState, Category = "BasketballGameStateMode | Score")
 	float AwayTeamScoreState = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
+	ABasketballPlayerController* PlayerWhoShot;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "BasketballGameStateMode | Timer")
 	float Minutes = 0;
@@ -56,10 +61,17 @@ public:
 	UFUNCTION(BlueprintPure, Category = "BasketballGameState | Getter Function")
 	float GetMatachTimerSeconds() const { return Seconds; };
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnRep_HomeTeamScoreState();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnRep_AwayTeamScoreState();
 
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "BasketballGameState | Game Logic")
 	void MatchTimer();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "BasketballGameState | Game Logic")
+	void EndMatch();
 
 };

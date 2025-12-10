@@ -69,6 +69,7 @@ void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
 			if (GameState)
 			{
 				GameState->HomeTeamScoreState += Score;
+				GameState->PlayerWhoShot = Shootball->PlayerWhoShot;
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Add Score"));
 			}
 			else
@@ -83,7 +84,9 @@ void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
 			if (GameState)
 			{
 				GameState->AwayTeamScoreState += Score;
+				GameState->PlayerWhoShot = Shootball->PlayerWhoShot;
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Add Score"));
+
 			}
 			else
 			{
