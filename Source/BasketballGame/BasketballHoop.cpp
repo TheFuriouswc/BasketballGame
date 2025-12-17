@@ -68,9 +68,32 @@ void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
 		{
 			if (GameState)
 			{
+
+				if (Shootball->PS)
+				{
+					GameState->PlayerStateWhoShot = Shootball->PS;
+				}
+				
+
+
+
+
 				GameState->HomeTeamScoreState += Score;
-				GameState->PlayerWhoShot = Shootball->PlayerWhoShot;
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("PlayerController: %s"), *GameState->PlayerWhoShot->GetName()));
+		
+				if (GameState->PlayerStateWhoShot)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("PlayerController: %s"), *GameState->PlayerStateWhoShot->GetName()));
+				}
+				else
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("PlayerController: nullptr")));
+				}
+			
+
+				//if (HasAuthority())
+				//{
+				//	GameState->OnRep_HomeTeamScoreState();
+				//}
 				/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Add Score"));*/
 			}
 			else
@@ -84,8 +107,9 @@ void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
 		{
 			if (GameState)
 			{
-				GameState->AwayTeamScoreState += Score;
 				GameState->PlayerWhoShot = Shootball->PlayerWhoShot;
+				GameState->AwayTeamScoreState += Score;
+
 				/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Add Score"));*/
 
 			}

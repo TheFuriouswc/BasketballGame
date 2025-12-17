@@ -8,6 +8,8 @@ void ABasketballGamePlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProp
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ABasketballGamePlayerState, bIsReady);
+	DOREPLIFETIME(ABasketballGamePlayerState, PlayerWhoShot);
+
 
 }
 

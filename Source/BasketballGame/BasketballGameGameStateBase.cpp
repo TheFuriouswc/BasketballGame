@@ -14,6 +14,7 @@ void ABasketballGameGameStateBase::GetLifetimeReplicatedProps(TArray<FLifetimePr
 	DOREPLIFETIME(ABasketballGameGameStateBase, Seconds);
 	DOREPLIFETIME(ABasketballGameGameStateBase, Minutes);
 	DOREPLIFETIME(ABasketballGameGameStateBase, PlayerWhoShot);
+	DOREPLIFETIME(ABasketballGameGameStateBase, PlayerStateWhoShot);
 }
 
 void ABasketballGameGameStateBase::Tick(float DeltaTime)

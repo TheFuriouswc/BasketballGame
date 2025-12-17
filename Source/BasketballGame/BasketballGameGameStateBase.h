@@ -8,6 +8,7 @@
 #include "Net/UnrealNetwork.h"
 #include "BasketballPlayerController.h"
 #include "BasketballGameGameMode.h"
+#include "BasketballGamePlayerState.h"
 #include "GameFramework/GameStateBase.h"
 #include "BasketballGameGameStateBase.generated.h"
 
@@ -38,6 +39,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "BasketballGameStateMode | Timer")
 	float Seconds = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
+	ABasketballGamePlayerState* PlayerStateWhoShot;
 
 	UPROPERTY(EditAnywhere, Replicated, Category = "BasketballGameStateMode | Timer")
 	float Delta;

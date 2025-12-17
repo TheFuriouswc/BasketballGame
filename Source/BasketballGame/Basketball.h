@@ -7,6 +7,7 @@
 #include "InteractInterface.h"
 #include "GameplayTagsManager.h"
 #include "BasketballPlayerController.h"
+#include "BasketballGamePlayerState.h"
 #include "TeamsEnum.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Basketball.generated.h"
@@ -34,6 +35,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
 	ABasketballPlayerController* PlayerWhoShot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, meta = (AllowPrivateAccess = "true"))
+	ABasketballGamePlayerState* PS;
 
 	UPROPERTY(EditAnywhere, Replicated, Category = "Player Controller | Players Team")
 	ETeamsEnum PlayersTeam;
