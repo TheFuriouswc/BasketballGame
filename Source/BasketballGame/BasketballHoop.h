@@ -32,7 +32,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	ABasketballGameGameMode* GameMode = Cast<ABasketballGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	ABasketballGameGameStateBase* GameState = Cast<ABasketballGameGameStateBase>(UGameplayStatics::GetGameState(GetWorld()));
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
@@ -52,7 +52,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Basketball Hoop | Score")
-	void Server_AddScore(ABasketball* Ball);
+	void Server_AddScore(ABasketball* Ball, ABasketballGameGameStateBase* GStateRef);
 
 
 };

@@ -11,6 +11,7 @@ void ABasketballHoop::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 	DOREPLIFETIME(ABasketballHoop, Score);
 	DOREPLIFETIME(ABasketballHoop, WhoBasketballHooop);
+	DOREPLIFETIME(ABasketballHoop, GameState);
 }
 
 // Sets default values
@@ -48,7 +49,7 @@ void ABasketballHoop::Tick(float DeltaTime)
 
 }
 
-void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
+void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball, ABasketballGameGameStateBase* GStateRef)
 {
 	if (ABasketball* Shootball = Cast<ABasketball>(Ball))
 	{
@@ -66,23 +67,23 @@ void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
 
 		if (Shootball->TeamWhoOwnsBall.MatchesTagExact(FGameplayTag::RequestGameplayTag(FName("Team.Home"))) && Ball)
 		{
-			if (GameState)
+			if (GStateRef)
 			{
 
 				if (Shootball->PS)
 				{
-					GameState->PlayerStateWhoShot = Shootball->PS;
+					GStateRef->PlayerStateWhoShot = Shootball->PS;
 				}
 				
 
 
 
 
-				GameState->HomeTeamScoreState += Score;
+				GStateRef->HomeTeamScoreState += Score;
 		
-				if (GameState->PlayerStateWhoShot)
+				if (GStateRef->PlayerStateWhoShot)
 				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("PlayerController: %s"), *GameState->PlayerStateWhoShot->GetName()));
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("PlayerController: %s"), *GStateRef->PlayerStateWhoShot->GetName()));
 				}
 				else
 				{
@@ -90,10 +91,10 @@ void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
 				}
 			
 
-				//if (HasAuthority())
-				//{
-				//	GameState->OnRep_HomeTeamScoreState();
-				//}
+				if (HasAuthority())
+				{
+					GStateRef->OnRep_HomeTeamScoreState();
+				}
 				/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Add Score"));*/
 			}
 			else
@@ -105,10 +106,10 @@ void ABasketballHoop::Server_AddScore_Implementation(ABasketball* Ball)
 		}
 		else if (Shootball->TeamWhoOwnsBall.MatchesTagExact(FGameplayTag::RequestGameplayTag(FName("Team.Away"))) && Ball)
 		{
-			if (GameState)
+			if (GStateRef)
 			{
-				GameState->PlayerWhoShot = Shootball->PlayerWhoShot;
-				GameState->AwayTeamScoreState += Score;
+				GStateRef->PlayerWhoShot = Shootball->PlayerWhoShot;
+				GStateRef->AwayTeamScoreState += Score;
 
 				/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Add Score"));*/
 
