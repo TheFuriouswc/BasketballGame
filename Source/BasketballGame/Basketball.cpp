@@ -44,7 +44,7 @@ void ABasketball::GetLifetimeReplicatedProps(TArray <FLifetimeProperty>& OutLife
 void ABasketball::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	Mesh->SetSimulatePhysics(false);
 }
 
 // Called every frame
@@ -69,8 +69,8 @@ void ABasketball::CallInteract(ACharacter* ActorWhoCalled)
 
 void ABasketball::AttachToPlayer(ACharacter* ActorWhoCalled)
 {
-		/*Mesh->SetSimulatePhysics(false);*/
-		Mesh->AttachToComponent(ActorWhoCalled->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("handSocket"));
+		Mesh->SetSimulatePhysics(false);
+		/*Mesh->AttachToComponent(ActorWhoCalled->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("handSocket"));*/
 		
 		if (ABasketballGameCharacter* PlayerCharacter = Cast<ABasketballGameCharacter>(ActorWhoCalled))
 		{
@@ -101,9 +101,10 @@ void ABasketball::AttachToPlayer(ACharacter* ActorWhoCalled)
 
 void ABasketball::Multi_SetPramas_Implementation(ACharacter* ActorWhoCalled)
 {
-	Mesh->SetSimulatePhysics(false);
+	//Mesh->SetSimulatePhysics(false);
+	Mesh->AttachToComponent(ActorWhoCalled->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("handSocket"));
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Server called"));
-	Mesh->SetWorldScale3D(Mesh->GetComponentScale() / ActorWhoCalled->GetMesh()->GetComponentScale());
+	Mesh->SetWorldScale3D(Mesh->GetComponentScale() /ActorWhoCalled->GetMesh()->GetComponentScale());
 }
 
 

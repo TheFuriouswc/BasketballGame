@@ -88,7 +88,6 @@ void ABasketballGameCharacter::NotifyControllerChanged()
 	}
 }
 
-
 void ABasketballGameCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -169,7 +168,6 @@ void ABasketballGameCharacter::Server_CalledOnSprint_Implementation()
 	}
 }
 
-
 void ABasketballGameCharacter::Server_CalledOnStopSprint_Implementation()
 {
 	if (Stamina >= 3 && !bIsOutOfStamina)
@@ -182,7 +180,6 @@ void ABasketballGameCharacter::Server_CalledOnStopSprint_Implementation()
 	bIsSprinting = false;
 	bRegenStamina = true;
 }
-
 
 void ABasketballGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -310,8 +307,6 @@ void ABasketballGameCharacter::StopSprint()
 	
 }
 
-
-
 void ABasketballGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -338,8 +333,6 @@ void ABasketballGameCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(ABasketballGameCharacter, RagDollTime);
 }
 
-
-
 void  ABasketballGameCharacter::Server_CalledOnGetLookRotation_Implementation(float Pitch)
 {
 	Multi_CalledOnGetLookRotation(Pitch);
@@ -349,7 +342,6 @@ void ABasketballGameCharacter::Multi_CalledOnGetLookRotation_Implementation(floa
 {
 	CameraPitch = Pitch;
 }
-
 
 void  ABasketballGameCharacter::Server_CalledOnInteract_Implementation()
 {
@@ -419,8 +411,6 @@ void ABasketballGameCharacter::Multi_CalledOnInteract_Implementation(ABasketball
 	}
 
 }
-
-
 
 void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAiming, ABasketball* BasketballReference, UCameraComponent* Camera, float ShootPower)
 {
@@ -497,7 +487,6 @@ void ABasketballGameCharacter::Server_CalledOnShootBall_Implementation(bool IsAi
 
 
 }
-
 
 void ABasketballGameCharacter::Multi_CalledOnShootBall_Implementation(bool IsAiming, ABasketball* BasketballReference)
 {

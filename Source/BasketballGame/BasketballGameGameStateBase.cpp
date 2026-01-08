@@ -27,36 +27,28 @@ void ABasketballGameGameStateBase::Tick(float DeltaTime)
 
 void ABasketballGameGameStateBase::MatchTimer_Implementation()
 {
-
-	if (Seconds <= 0)
+	if (Minutes <= 0.0f && Seconds <= 0.0f)
 	{
-		Seconds = 59.0f;
-		Minutes -= Delta;
-		if (Minutes < 0.0f)
-		{
-			Seconds = 0;
-			Minutes = 0;
-		}
+		Minutes = 0.0f;
+		Seconds = 0.0f;
+		EndMatch();
+		return;
 	}
-	else
+
+	Seconds -= Delta;
+
+	if (Seconds < 0.0f)
 	{
-		if (Seconds == 0 && Minutes == 0)
-		{
+		Seconds += 60.0f;
+		Minutes -= 1.0f;
+	}
 
-		}
-		Seconds -= Delta;
-
-		if (Seconds < 0.0f)
-		{
-			Seconds += 59.0f;
-			Minutes -= 1.0f;
-
-			if (Minutes < 0.0f)
-			{
-				Minutes = 0.0f;
-				Seconds = 0.0f;
-			}
-		}
+	// Clamp to zero in case we overshot
+	if (Minutes < 0.0f)
+	{
+		Minutes = 0.0f;
+		Seconds = 0.0f;
+		EndMatch();
 	}
 
 
